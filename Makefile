@@ -1,2 +1,4 @@
-all:
-	sml main.sml
+exp:
+	sml exp.sml
+fun:
+	sml fun.sml

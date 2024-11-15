@@ -1,4 +1,13 @@
 use "include/utils.sml";
+type Env = (string*int) List;
+(*
+    (("x",2),(("y",3),empty))
+*)
+
+fun search (empty: Env) (needle: string) = raise EmptyList "unbound variable" |
+    search (cons ((varname,content), haystack): Env) (needle: string) = 
+        if varname = needle then content
+        else search haystack needle;
 
 datatype Exp = K of int | Plus of (Exp*Exp) | Var of string 
     | Let of (string*Exp*Exp);
