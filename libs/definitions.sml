@@ -1,34 +1,36 @@
 use "libs/utils.sml";
 
 (* Fun eagear dinamico *)
-datatype Fun = K of int | Plus of (Fun*Fun) | Variable of Var 
+datatype Fun = K of Val | Plus of (Fun*Fun) | Variable of Var (*nome valore*)
     | Fn of (Var*Fun) | Call of (Fun*Fun);
 
-datatype EnvItem = Integer of Val | Function of (Var*Fun) | Exp of Fun;
+type 'a GenericEnv = (Var*'a) List;
 
-exception NotConvertable of string;
+datatype EnvItem = Integer of Val |
+    Function of (Var*Fun) | Exp of Fun | NewEnv of EnvItem GenericEnv*Val;
+
+type Env = (EnvItem GenericEnv)
 
 fun toInt (Integer x) =  x |
-    toInt (Function _) = raise NotConvertable "non posso convertire funzione in intero" |
-    toInt (Exp _) = raise NotConvertable "non posso convertire direttamente un espressione in intero";
+    toInt (other:EnvItem) = raise NotConvertable;
 
-fun toFun (Integer _) = raise NotConvertable "non posso convertire un intero a una funzione" |
-    toFun (Function f) = f |
-    toFun (Exp _) = raise NotConvertable "non posso convertire direttamente un espressione a una funzione";
+fun toFun (Function f) = f |
+    toFun (other:EnvItem) = raise NotConvertable;
 
-fun toExp (Integer _) = raise NotConvertable "non posso convertire un expressione a un intero" |
-    toExp (Function _) = raise NotConvertable "non posso convertire un expressione a una funzione" |
-    toExp (Exp e) = e;
+fun toExp (Exp e) = e |
+    toExp (other:EnvItem) = raise NotConvertable;
 
-type Env = (string*EnvItem) List;
+fun toEnv (NewEnv (env,item)) = (env,item) |
+    toEnv (other:EnvItem) = raise NotConvertable;
 
-fun search (empty: Env) (needle: Var) = raise EmptyList "unbound variable" |
+
+fun search (empty: Env) (needle: Var) = raise EmptyList |
     search (cons ((varname,content), haystack): Env) (needle: Var) = 
         if varname = needle then content
         else search haystack needle;
 
 (*deve ritornare il nuovo env*)
-fun replace  (empty: Env) (needle:Var) (newVal: EnvItem) = raise EmptyList "unbound variable" |
+fun replace (empty: Env) (needle:Var) (newVal: EnvItem) = raise EmptyList |
     replace (cons ((name,oldVal), haystack): Env) (needle:Var) (newVal:EnvItem) = 
         if name = needle then raise TODO
         else raise TODO;
