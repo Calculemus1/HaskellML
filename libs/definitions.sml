@@ -32,12 +32,15 @@ fun search (empty: Env) (needle: Var) = raise EmptyList |
 (*deve ritornare il nuovo env*)
 fun replace (empty: Env) (needle:Var) (newVal: EnvItem) = raise EmptyList |
     replace (cons ((name,oldVal), haystack): Env) (needle:Var) (newVal:EnvItem) = 
-        if name = needle then raise TODO
-        else raise TODO;
+        if name = needle 
+            then (oldVal,cons ((name,newVal),haystack))
+        else 
+        let val (oldVal, newEnv) = replace haystack needle newVal;
+        in (oldVal,(cons ((name,oldVal),haystack))) end;
 
 fun search_and_replace (env: Env) (needle: Var) =
     let
-        val res = search env needle
+        val res = toEnv (search env needle) (*cattura eccezione e imposta res a quel valore*)
     in
-        replace env needle res
+        replace env needle (eval res)
     end; 

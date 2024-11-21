@@ -1,7 +1,6 @@
 
 use "libs/definitions.sml";
 
-
 (* Env*Fun -> EnvItem *)
 fun eval (env: Env) (K (n)) = Integer n |
     eval (env: Env) (Variable (s)) = search_and_replace env s | (* TODO: scrivere richiamo a replace*)
