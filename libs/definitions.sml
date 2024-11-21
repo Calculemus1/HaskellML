@@ -1,10 +1,10 @@
 use "libs/utils.sml";
 
 (* Fun eagear dinamico *)
-datatype Fun = K of int | Plus of (Fun*Fun) | Var of var 
-    | Fn of (var*Fun) | Call of (Fun*Fun);
+datatype Fun = K of int | Plus of (Fun*Fun) | Variable of Var 
+    | Fn of (Var*Fun) | Call of (Fun*Fun);
 
-datatype EnvItem = Integer of int | Function of (string*Fun) | Exp of Fun;
+datatype EnvItem = Integer of Val | Function of (Var*Fun) | Exp of Fun;
 
 exception NotConvertable of string;
 
@@ -22,11 +22,20 @@ fun toExp (Integer _) = raise NotConvertable "non posso convertire un expression
 
 type Env = (string*EnvItem) List;
 
-fun search (empty: Env) (needle: string) = raise EmptyList "unbound variable" |
-    search (cons ((varname,content), haystack): Env) (needle: string) = 
+fun search (empty: Env) (needle: Var) = raise EmptyList "unbound variable" |
+    search (cons ((varname,content), haystack): Env) (needle: Var) = 
         if varname = needle then content
         else search haystack needle;
 
 (*deve ritornare il nuovo env*)
-fun replace  (empty: Env) (needle:string) (newVal: EnvItem) = raise EmptyList "unbound variable" |
-    replace (cons ((x,oldVal), haystack): Env) (needle: string) (newVal: EnvItem) = raise TODO;
+fun replace  (empty: Env) (needle:Var) (newVal: EnvItem) = raise EmptyList "unbound variable" |
+    replace (cons ((name,oldVal), haystack): Env) (needle:Var) (newVal:EnvItem) = 
+        if name = needle then raise TODO
+        else raise TODO;
+
+fun search_and_replace (env: Env) (needle: Var) =
+    let
+        val res = search env needle
+    in
+        replace env needle res
+    end; 

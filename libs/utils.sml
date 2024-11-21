@@ -7,5 +7,7 @@ exception TODO;
 fun top (empty) = raise EmptyList "the list is empty" |
     top (cons (i,restoDellaLista)) = i;
 
-type var = string;
+type Var = string;
+
+type Val = int;
 

@@ -4,12 +4,12 @@ type Env = (string*int) List;
     (("x",2),(("y",3),empty))
 *)
 
-fun search (empty: Env) (needle: string) = raise EmptyList "unbound variable" |
-    search (cons ((varname,content), haystack): Env) (needle: string) = 
+fun search (empty: Env) (needle: var) = raise EmptyList "unbound variable" |
+    search (cons ((varname,content), haystack): Env) (needle: var) = 
         if varname = needle then content
         else search haystack needle;
 
-datatype Exp = K of int | Plus of (Exp*Exp) | Var of string 
+datatype Exp = K of Val | Plus of (Exp*Exp) | Variable of Var 
     | Let of (string*Exp*Exp);
 (*
     (("z",3),(("x",2),(("y",3),empty)))
