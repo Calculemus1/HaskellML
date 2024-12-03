@@ -4,7 +4,6 @@ use "libs/utils.sml";
 datatype TauTypes = number | boolean | VarType of Var | Arrow of (TauTypes*TauTypes);
 datatype SigmaTypes = Type of TauTypes | ForAll of (Var*SigmaTypes);
 
-(* Fun eagear dinamico *)
 datatype Fun = K of Val | Plus of (Fun*Fun) | Variable of Var (*nome valore*)
     | Fn of (Var*Fun) | Call of (Fun*Fun);
 

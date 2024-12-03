@@ -1,6 +1,6 @@
 
 use "libs/definitions.sml";
-
+(*TODO: capire se ho rispettato i requisiti della call-by-name*)
 (* Env*Fun -> Env*Result *)
 fun eval ((env: Env), (K (n))): Env*Result = (env, Integer n) |
     eval ((env: Env), (Variable (s))): Env*Result = 
@@ -13,8 +13,9 @@ fun eval ((env: Env), (K (n))): Env*Result = (env, Integer n) |
     end |
     eval ((env: Env), (Plus (n, m))): Env*Result = 
         let
-            val (env1, n1) =  (eval (env, n));
+            val (env1, n1) =  (eval (env, n)); (*TODO: capire se mettere due eval diversi o sempre lo stesso*)
             val (env2, n2) =  (eval (env1, m));
+            (*val newEnv = union env1 env2;*)
         in
             (env2, Integer ((toInt n1) + (toInt n2)))
         end |
@@ -27,13 +28,3 @@ fun eval ((env: Env), (K (n))): Env*Result = (env, Integer n) |
         in
             (eval (newEnv,corpo))
         end;
-
-val myEnv: Env = empty;
-(* (fn x => x + 1) 5 -> 6 *)
-eval myEnv (Call ((Fn ("x",(Plus(Variable ("x"),K 1)))),(K 5)));
-(* let x = 1 in let y = x in let x = 2 in y*)
-(*let x = M in N*)
-(*(fn x => N) M*)
-(* (fn x => (fn y => (fn x => y) 2) x) 1 *)
-val myEnv: Env = empty; (*TODO: capire se questa riassegnazione serva effettivamente*)
-eval myEnv (Call ((Fn ("x",(Call((Fn("y", (Call(Fn("x",(Variable("y"))),K 2)) )),(Variable("x")))))),(K 1)));

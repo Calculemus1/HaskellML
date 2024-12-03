@@ -11,4 +11,9 @@ exception NotConvertable;
 exception TODO;
 
 fun top (empty) = raise EmptyList |
-    top (cons (i,restoDellaLista)) = i;
+    top (cons (item,haystack)) = item;
+
+fun push (list) (item) = cons (item, list);
+
+fun pop (empty) = raise EmptyList |
+    pop (cons (item, haystack)) = item;
