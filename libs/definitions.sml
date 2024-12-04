@@ -5,7 +5,7 @@ datatype TauTypes = number | boolean | VarType of Var | Arrow of (TauTypes*TauTy
 datatype SigmaTypes = Type of TauTypes | ForAll of (Var*SigmaTypes);
 
 datatype Fun = K of Val | Plus of (Fun*Fun) | Variable of Var (*nome valore*)
-    | Fn of (Var*Fun) | Call of (Fun*Fun);
+    | Fn of (Var*Fun) | Call of (Fun*Fun) | Let of (Var*Fun*Fun);
 
 datatype Result = Integer of Val |
     Function of (Var*Fun) | Exp of Fun;

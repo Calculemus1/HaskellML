@@ -27,4 +27,10 @@ fun eval ((env: Env), (K (n))): Env*Result = (env, Integer n) |
             val newEnv = cons ((param,Exp n), env1);
         in
             (eval (newEnv,corpo))
+        end |
+    eval ((env: Env), (Let (s,m,n))): Env*Result =
+        let
+            val newEnv = push env (s,Exp m);
+        in
+            (eval (newEnv, n))
         end;
