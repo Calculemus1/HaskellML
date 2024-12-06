@@ -5,11 +5,11 @@ use "libs/definitions.sml";
 fun eval ((env: Env), (K (n))): Env*Result = (env, Integer n) |
     eval ((env: Env), (Variable (s))): Env*Result = 
     let
-        val exp = toExp (search env s) (*TODO: cattura eccezione e imposta res a quel valore*)
-        val (newEnv,newVal) = (eval (env, exp))
-        val (oldVal,newEnv) = replace newEnv s newVal
+        val ((newEnv,newVal),err) = ((eval (env,(toExp (search env s))),false) handle
+            NotConvertable other => ((env,other),true));
     in
-        (newEnv,newVal)
+        if err then (newEnv,newVal)
+        else (push newEnv (s,newVal),newVal)
     end |
     eval ((env: Env), (Plus (n, m))): Env*Result = 
         let
