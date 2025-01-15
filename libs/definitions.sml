@@ -5,21 +5,23 @@ datatype TauTypes = number | boolean | VarType of Var | Arrow of (TauTypes*TauTy
 datatype SigmaTypes = Type of TauTypes | ForAll of (Var*SigmaTypes);
 
 datatype Fun = K of Val | Plus of (Fun*Fun) | Variable of Var (*nome valore*)
-    | Fn of (Var*Fun) | Call of (Fun*Fun);
+    | Fn of (Var*Fun) | Call of (Fun*Fun) | Let of (Var*Fun*Fun);
 
 datatype Result = Integer of Val |
     Function of (Var*Fun) | Exp of Fun;
 
+exception NotConvertable of Result;
+
 type Env = (Result GenericEnv)
 
 fun toInt (Integer x) =  x |
-    toInt (other:Result) = raise NotConvertable;
+    toInt (other:Result) = raise NotConvertable other;
 
 fun toFun (Function f) = f |
-    toFun (other:Result) = raise NotConvertable;
+    toFun (other:Result) = raise NotConvertable other;
 
 fun toExp (Exp e) = e |
-    toExp (other:Result) = raise NotConvertable;
+    toExp (other:Result) = raise NotConvertable other;
 
 
 fun search (empty: Env) (needle: Var) = raise EmptyList |

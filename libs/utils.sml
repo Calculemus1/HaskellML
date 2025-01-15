@@ -7,7 +7,6 @@ type 'a GenericEnv = (Var*'a) List;
 type 'a GenericCtx = (Var*'a) List;
 
 exception EmptyList;
-exception NotConvertable;
 exception TODO;
 
 fun top (empty) = raise EmptyList |
@@ -16,4 +15,4 @@ fun top (empty) = raise EmptyList |
 fun push (list) (item) = cons (item, list);
 
 fun pop (empty) = raise EmptyList |
-    pop (cons (item, haystack)) = item;
+    pop (cons (item, haystack)) = (item,haystack);

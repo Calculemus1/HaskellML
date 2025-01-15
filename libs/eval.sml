@@ -1,21 +1,21 @@
 
 use "libs/definitions.sml";
-(*TODO: capire se ho rispettato i requisiti della call-by-name*)
 (* Env*Fun -> Env*Result *)
 fun eval ((env: Env), (K (n))): Env*Result = (env, Integer n) |
-    eval ((env: Env), (Variable (s))): Env*Result = 
-    let
-        val exp = toExp (search env s) (*TODO: cattura eccezione e imposta res a quel valore*)
-        val (newEnv,newVal) = (eval (env, exp))
-        val (oldVal,newEnv) = replace newEnv s newVal
+    eval ((env: Env), (Variable (s))): Env*Result =
+    (*Abbiamo il caso in cui nella variabile abbiamo associato un espressione oppure un valore*) 
+    (*Potremmo trovare un espressione associata o un valore, se è un valore da errore e quindi non viene fatta la conversione*)
+    let 
+        val ((newEnv,newVal),err) = ((eval (env,(toExp (search env s))),false) handle
+            NotConvertable other => ((env,other),true));
     in
-        (newEnv,newVal)
+        if err then (newEnv,newVal) (*non c'è bisogno di modificare env*)
+        else (push newEnv (s,newVal),newVal)
     end |
     eval ((env: Env), (Plus (n, m))): Env*Result = 
         let
             val (env1, n1) =  (eval (env, n)); (*TODO: capire se mettere due eval diversi o sempre lo stesso*)
             val (env2, n2) =  (eval (env1, m));
-            (*val newEnv = union env1 env2;*)
         in
             (env2, Integer ((toInt n1) + (toInt n2)))
         end |
@@ -27,4 +27,10 @@ fun eval ((env: Env), (K (n))): Env*Result = (env, Integer n) |
             val newEnv = cons ((param,Exp n), env1);
         in
             (eval (newEnv,corpo))
+        end |
+    eval ((env: Env), (Let (s,m,n))): Env*Result =
+        let
+            val newEnv = push env (s,Exp m);
+        in
+            (eval (newEnv, n))
         end;
